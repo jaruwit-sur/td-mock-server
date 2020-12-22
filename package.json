@@ -1,0 +1,25 @@
+{
+  "name": "td-mock-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "nodemon -r esm index.js",
+    "start": "node -r esm index.js"
+  },
+  "author": "Jaruwit",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "lodash": "^4.17.20",
+    "moment": "^2.29.1",
+    "mongoose": "^5.11.8",
+    "nodemon": "^2.0.6",
+    "stjs": "0.0.5"
+  }
+}
