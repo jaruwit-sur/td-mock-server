@@ -4,7 +4,6 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import * as router from './routers/router';
 import * as dotenv from 'dotenv';
-import { networkInterfaces } from 'os'
 
 dotenv.config();
 
@@ -18,7 +17,7 @@ mongoose.connect(process.env.DB_HOST, {
 const port = process.env.SERVER_PORT || 3000;
 const app = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(router.routers);
 app.listen(port, async () => console.log(`TD Mock Server is running ... on port : ${port}`));
