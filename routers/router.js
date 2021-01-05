@@ -6,9 +6,9 @@ import * as commond from '../utils/commond';
 const apisUrl = '/apis';
 
 export const routers = async (req, res, next) => {
-    const { _parsedUrl : { pathname } , query, headers, method, body } = req;
+    const { _parsedUrl: { pathname }, query, headers, method, body } = req;
     // console.log("pathname  : ", pathname);
-    //console.log("query     : ", query);
+    // console.log("query     : ", query);
     // console.log("headers   : ", headers);
     // console.log("method    : ", method);
     // console.log("body      : ", body);
@@ -33,42 +33,40 @@ export const routers = async (req, res, next) => {
     }
 };
 
-const urlAndMethodMatching = async (apis, url, method) => {
-    return await apis.find(api => api.url === url && api.method.toLowerCase() === method.toLowerCase());
+const urlAndMethodMatching = async (apis, pathname, method) => {
+    return await apis.find(api => api.url === pathname && api.method.toLowerCase() === method.toLowerCase());
 }
 
 const handleResponseByScenario = async (urlAndMethodMatcher, headers, query, body, res) => {
-    const { scenarios } =  urlAndMethodMatcher;
+    const { scenarios } = urlAndMethodMatcher;
     const scenario = scenarios.find(scenario => hasMatchArguments(headers, query, body, scenario.matchArgument));
 
     if (!scenario) {
         res.status(404).json();
         return;
-    } else {
-        const { responseStatusCode, webHook } = scenario;
-        const responseData = await mappingResponse(body, scenario);
-        res.status(responseStatusCode).json(responseData);
-        if (webHook.isEnable) {
-            await webhookService.hook(body, webHook);
-            return;
-        }
+    }
+     
+    const { responseStatusCode, webHook } = scenario;
+    const responseData = await mappingResponse(body, scenario);
+    res.status(responseStatusCode).json(responseData);
+    if (webHook.isEnable) {
+        await webhookService.hook(body, webHook);
+        return;
     }
 }
 
 const hasMatchArguments = (reqHeaders, reqParams, reqBody, matchArgument) => {
     const { headers, parameters, payloads } = matchArgument;
-    let hasMatchHeaders = hasMatchArgument(reqHeaders, headers, "headers");
-    let hasMatchParameters = hasMatchArgument(reqParams, parameters, "parameters");
-    let hasMatchPayloads = hasMatchArgument(reqBody, payloads, "payloads");
+    let hasMatchHeaders = hasMatchArgument(reqHeaders, headers);
+    let hasMatchParameters = hasMatchArgument(reqParams, parameters);
+    let hasMatchPayloads = hasMatchArgument(reqBody, payloads);
     //console.log("hasMatchHeaders     : ", hasMatchHeaders);
     //console.log("hasMatchParameters  : ", hasMatchParameters);
     //console.log("hasMatchPayloads    : ", hasMatchPayloads);
-
     return hasMatchHeaders && hasMatchParameters && hasMatchPayloads;
 }
 
-const hasMatchArgument = (request, matchArgument, keyMatch) => {
-    //console.log("keyMatch       : ", keyMatch);
+const hasMatchArgument = (request, matchArgument) => {
     //console.log("request        : ", request);
     //console.log("matchArgument  : ", matchArgument);
     //console.log("...................................");

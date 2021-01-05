@@ -10,9 +10,9 @@ dotenv.config();
 console.log("DB_HOST     : ", process.env.DB_HOST);
 console.log("SERVER_PORT : ", process.env.SERVER_PORT);
 
-mongoose.connect(process.env.DB_HOST, {
-     useNewUrlParser: true
-});
+mongoose.connect(process.env.DB_HOST, { useNewUrlParser: true})
+.then(() => console.log("MongoDB connected ..."))
+.catch(error => console.error(error))
 
 const port = process.env.SERVER_PORT || 3000;
 const app = express();
